@@ -9,3 +9,7 @@ RUN apt-get update && apt-get install -y \
     apt-get update && \
     apt-get install -y percona-pg-stat-monitor17 && \
     rm -rf /var/lib/apt/lists/*
+
+
+COPY ./setup.sql /docker-entrypoint-initdb.d/setup.sql
+COPY ./postgresql.conf /etc/postgresql/postgresql.conf

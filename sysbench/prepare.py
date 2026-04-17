@@ -33,9 +33,8 @@ class Prepare(BaseSysbench):
             self.ctx.db.query("CHECKPOINT")
             self.log.info("postgres_checkpoint: success")
 
-            result = subprocess.run(cmd, check=True, capture_output=True, text=True)
-            self.log.info("vacuum_out: %s", result.stdout)
-
+            subprocess.run(cmd, check=True, capture_output=True, text=True)
+    
         except subprocess.CalledProcessError as e:
             raise e
 

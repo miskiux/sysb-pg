@@ -2,6 +2,7 @@ import argparse
 import subprocess
 from abc import ABC, abstractmethod
 from enum import Enum
+import time
 
 from context import Context, bootstrap_context
 from env import db_host, db_name, db_password, db_user
@@ -59,11 +60,14 @@ class BaseSysbench(ABC):
             {"status": "progress", **self.meta},
         )
 
+        start = time.perf_counter()
         try:
             result = subprocess.run(cmd, text=True, check=True, capture_output=True)
+            
+            duration = round(time.perf_counter() - start, 3)
             self.log.info(
                 "sysbench_complete: %s",
-                {"status": "complete"},
+                {"status": "complete", "duration": duration,},
             )
 
             return result.stdout.strip()

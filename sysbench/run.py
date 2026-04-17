@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 
 from base import BaseSysbench, Command
+from env import db_name
 
 
 class Run(BaseSysbench):
@@ -31,7 +32,8 @@ class Run(BaseSysbench):
             self.log.error(e)
 
     def collect_stats(self, stdout):
-        stat_statements = self.ctx.db.query("""
+        storage_usage = self.ctx.db.query("SELECT pg_size_pretty(pg_database_size(%s))", (db_name,)).fetchall()
+        pg_ss = self.ctx.db.query("""
                 SELECT 
                     query, 
                     calls, 
@@ -45,7 +47,7 @@ class Run(BaseSysbench):
                 LIMIT 20;
             """).fetchall()
 
-        sb_metrics = {
+        sysb_metrics = {
             "tps_count": self.match(r"transactions:\s+(\d+)", stdout),
             "tps_rate": self.match(r"transactions:.*?\((\d+\.\d+) per sec\.\)", stdout),
             "qps_count": self.match(r"queries:\s+(\d+)", stdout),
@@ -79,18 +81,11 @@ class Run(BaseSysbench):
             ),
         }
 
-        it = iter(re.split(r"\[\s*(\d+)s\s*\]", stdout)[1:])
-        sb_time_series = [
-            {"second": int(ts), "data": data.strip()} for ts, data in zip(it, it)
-        ]
-
         return {
-            "metadata": {
-                # hardware, postgresql.conf
-            },
-            "summary_metrics": sb_metrics,
-            "time_series_data": sb_time_series,
-            "query_statistics": stat_statements,
+            "storage_usage": storage_usage,
+            "metadata": {**self.meta},
+            "sysb_metrics": sysb_metrics,
+            "pg_ss": pg_ss,
             "execution_log": stdout,
         }
 

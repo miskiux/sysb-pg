@@ -1,7 +1,7 @@
 from pathlib import Path
 
 class Params:
-    def __init__(self, base_path="/params"):
+    def __init__(self, base_path="config/params"):
         self.base_path = Path(base_path)
 
     def get(self, test_name: str, key: str, default=None):
