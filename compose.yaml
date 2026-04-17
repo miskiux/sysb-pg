@@ -19,8 +19,8 @@ services:
   sysbench-tool:
     build:
       context: ./
-      dockerfile: Dockerfile.sysbench
-    image: syspg/sysbench:latest
+      dockerfile: Dockerfile
+    image: kwikbench/sysbench-tool:latest
     networks: [ default ]
     volumes:
       - ./sysbench:/app
