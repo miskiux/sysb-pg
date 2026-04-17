@@ -20,10 +20,10 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    image: kwikbench/sysbench-tool:latest
+    image: kwik-sys-b/sysbench-tool:latest
     networks: [ default ]
     volumes:
-      - ./sysbench:/app
+      - ./:/app
     environment:
       <<: *db-env
   postgres:
