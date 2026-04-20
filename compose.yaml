@@ -20,7 +20,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    image: benchmark-system/sysbench-tool:latest
+    image: chmark/sysbench-tool:latest
     networks: [ default ]
     volumes:
       - ./:/app
